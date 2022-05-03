@@ -74,35 +74,47 @@ class Post extends Model
 }
 ```
 
-The `nanoIdColumns` must return an array. You can customize the generated `NanoId` for each column by using an associative array where the key is the column name and the value is an array with an optional `size` and `alphabet` keys.
-
-The following arrays are supported.
+The `nanoIdColumns` must return an array. You can customize the generated `NanoId` for each column by using an associative array where the key is the column name and the value is an array with an optional int `size` and string `alphabet` keys.
 
 ```php
   public function nanoIdColumns(): array
     {
-        // array of column names: will use the default generator
+        // Option 1: array of column names: will use the default generator
         return ['nanoid', 'custom_column'];
 
-        // an array where each element is an array with a required 'key' property.
+        // Option 2: an array where each element is an array with a required 'key' property.
         // no id will be generated if key is null. 'size' and 'alphabet' are optional
         return [
             ['key'=>'nanoid'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
-            ['key'=>'column_one', 'size' => 6, 'alphabets'=> NanoId::ALPHABET_DEFAULT], // '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
-            ['key'=>'column_two', 'size' => 10, 'alphabets'=> NanoId::ALPHABET_NUMBERS], // '0123456789'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_NUMBERS_READABLE], // '346789'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_LOWERCASE], // 'abcdefghijklmnopqrstuvwxyz'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_LOWERCASE_READABLE], // 'abcdefghijkmnpqrtwxyz'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_UPPERCASE], // 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_UPPERCASE_READABLE], // 'ABCDEFGHIJKMNPQRTWXYZ'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_ALPHA_NUMERIC], // '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-            // Numbers and English alphabet without unreadable letters: 1, l, I, 0, O, o, u, v, 5, S, s, 2, Z
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_ALPHA_NUMERIC_READABLE], // '346789abcdefghijkmnpqrtwxyzABCDEFGHJKLMNPQRTUVWXY'
-            // Same as ALPHABET_ALPHA_NUMERIC_READABLE but with removed vowels and following letters: 3, 4, x, X, V.
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_ALPHA_NUMERIC_READABLE_SAFE], // '6789bcdfghjkmnpqrtwzBCDFGHJKLMNPQRTW'
-            ['key'=>'column_three', 'size' => 8, 'alphabets'=> NanoId::ALPHABET_UUID], // '0123456789abcdef'
+            ['key'=>'column_one', 'size' => 6, 'alphabets'=> NanoId::ALPHABET_NUMBERS],
+            ['key'=>'column_two', 'size' => 10, 'alphabets'=> NanoId::ALPHABET_UUID],
+        ];
+
+          // Option 3: an array with a string key and an array value with an optional 'size' and 'alphabet' property. If a 'key' is passed in the value, it overwrites the original array 'key'.
+        return [
+            ['key'=>'nanoid'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
+            'column_one' => ['size' => 6, 'alphabets'=> NanoId::ALPHABET_NUMBERS],
+            // will use 'another_column' as the column name instead of 'column_two'
+            'column_two' => ['key'=>'another_column', 'size' => 10, 'alphabets'=> NanoId::ALPHABET_UUID],
         ];
     }
+```
+
+The following options are available for the alphabet key.
+
+```php
+    NanoId::ALPHABET_DEFAULT => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
+    NanoId::ALPHABET_NUMBERS =>'0123456789'NanoId::ALPHABET_NUMBERS_READABLE => '346789'
+    NanoId::ALPHABET_LOWERCASE => 'abcdefghijklmnopqrstuvwxyz'
+    NanoId::ALPHABET_LOWERCASE_READABLE => 'abcdefghijkmnpqrtwxyz'
+    NanoId::ALPHABET_UPPERCASE => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    NanoId::ALPHABET_UPPERCASE_READABLE => 'ABCDEFGHIJKMNPQRTWXYZ'
+    NanoId::ALPHABET_ALPHA_NUMERIC => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            // Numbers and English alphabet without unreadable letters: 1, l, I, 0, O, o, u, v, 5, S, s, 2, Z
+    NanoId::ALPHABET_ALPHA_NUMERIC_READABLE => '346789abcdefghijkmnpqrtwxyzABCDEFGHJKLMNPQRTUVWXY'
+            // Same as ALPHABET_ALPHA_NUMERIC_READABLE but with removed vowels and following letters: 3, 4, x, X, V.
+    NanoId::ALPHABET_ALPHA_NUMERIC_READABLE_SAFE => '6789bcdfghjkmnpqrtwzBCDFGHJKLMNPQRTW'
+    NanoId::ALPHABET_UUID => '0123456789abcdef'
 ```
 
 Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to configure your model for this setup correctly. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
