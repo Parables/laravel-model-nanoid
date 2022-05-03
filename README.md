@@ -1,17 +1,8 @@
 # Laravel Model UUIDs
 
-[![Build Status](https://github.com/michaeldyrynda/laravel-model-nanoid/workflows/run-tests/badge.svg)](https://github.com/michaeldyrynda/laravel-model-nanoid/actions?query=workflow%3Arun-tests)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/michaeldyrynda/laravel-model-nanoid/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/michaeldyrynda/laravel-model-nanoid/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/michaeldyrynda/laravel-model-nanoid/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/michaeldyrynda/laravel-model-nanoid/?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/dyrynda/laravel-model-nanoid/v/stable)](https://packagist.org/packages/dyrynda/laravel-model-nanoid)
-[![Total Downloads](https://poser.pugx.org/dyrynda/laravel-model-nanoid/downloads)](https://packagist.org/packages/dyrynda/laravel-model-nanoid)
-[![License](https://poser.pugx.org/dyrynda/laravel-model-nanoid/license)](https://packagist.org/packages/dyrynda/laravel-model-nanoid)
-[![Dependency Status](https://www.versioneye.com/php/dyrynda:laravel-model-nanoid/dev-master/badge?style=flat-square)](https://www.versioneye.com/php/dyrynda:laravel-model-nanoid/dev-master)
-[![Buy us a tree](https://img.shields.io/badge/Treeware-%F0%9F%8C%B3-lightgreen)](https://plant.treeware.earth/michaeldyrynda/laravel-model-nanoid)
-
 ## Introduction
 
-Huge thanks to the original authors of Micheal Dyrynda, whose work inspired me to create this package based on [laravel-model-nanoid](https://github.com/michaeldyrynda/laravel-model-nanoid) but uses NanoId instead of NanoID.
+Huge thanks to Micheal Dyrynda, whose work inspired me to create this package based on [laravel-model-nanoid](https://github.com/michaeldyrynda/laravel-model-nanoid) but uses NanoId instead of UUID.
 
 ## Why NanoID?
 
@@ -25,10 +16,10 @@ A tiny, secure, URL-friendly, unique string ID generator for PHP.
 This package is PHP implementation of [ai's](https://github.com/ai) [nanoid](https://github.com/ai/nanoid).
 Read its documentation for more information.
 
--   **Fast.** It is faster than NanoID.
--   **Safe.** It uses cryptographically strong random APIs. Can be used in clusters.
--   **Compact.** It uses a larger alphabet than NanoID (`A-Za-z0-9_-`). So ID size was reduced from 36 to 21 symbols.
--   **Customizable.** Size, alphabet and Random Bytes Generator may be overridden.
+- **Fast.** It is faster than NanoID.
+- **Safe.** It uses cryptographically strong random APIs. Can be used in clusters.
+- **Compact.** It uses a larger alphabet than NanoID (`A-Za-z0-9_-`). So ID size was reduced from 36 to 21 symbols.
+- **Customizable.** Size, alphabet and Random Bytes Generator may be overridden.
 
 > **Note**: this package explicitly does not disable auto-incrementing on your Eloquent models. In terms of database indexing, it is generally more efficient to use auto-incrementing integers for your internal querying. Indexing your `nanoid` column will make lookups against that column fast, without impacting queries between related models.
 
@@ -192,10 +183,10 @@ Read more about Treeware at [treeware.earth](https://treeware.earth)
 
 ## Tools
 
--   [ID size calculator](https://github.com/CyberAP/nanoid-dictionary) shows collision probability when adjusting the ID alphabet or size.
+- [ID size calculator](https://github.com/CyberAP/nanoid-dictionary) shows collision probability when adjusting the ID alphabet or size.
 
 ## Credits
 
--   Andrey Sitnik [ai](https://github.com/ai) for [Nano ID](https://github.com/ai/nanoid).
--   Michael Dyrynda [michaeldyrynda](https://github.com/michaeldyrynda) for [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid).
--   Stanislav Lashmanov [CyberAP](https://github.com/CyberAP) for [Predefined character sets to use with Nano ID](https://github.com/CyberAP/nanoid-dictionary).
+- Andrey Sitnik [ai](https://github.com/ai) for [Nano ID](https://github.com/ai/nanoid).
+- Michael Dyrynda [michaeldyrynda](https://github.com/michaeldyrynda) for [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid).
+- Stanislav Lashmanov [CyberAP](https://github.com/CyberAP) for [Predefined character sets to use with Nano ID](https://github.com/CyberAP/nanoid-dictionary).
