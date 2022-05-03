@@ -1,5 +1,5 @@
 {
-    "name": "parables/laravel-nanoid",
+    "name": "parables/laravel-model-nanoid",
     "description": "This package allows you to easily work with NanoID in your Laravel models.",
     "license": "MIT",
     "keywords": [
