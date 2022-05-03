@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
-use Tests\Fixtures\CustomUuidRouteBoundPost;
-use Tests\Fixtures\MultipleUuidRouteBoundPost;
-use Tests\Fixtures\UuidRouteBoundPost;
+use Tests\Fixtures\CustomNanoIdRouteBoundPost;
+use Tests\Fixtures\MultipleNanoIdRouteBoundPost;
+use Tests\Fixtures\NanoIdRouteBoundPost;
 use Tests\TestCase;
 
 class BindUuidTest extends TestCase
@@ -14,78 +14,78 @@ class BindUuidTest extends TestCase
     /** @test */
     public function it_binds_to_default_uuid_field()
     {
-        $post = factory(UuidRouteBoundPost::class)->create();
+        $post = factory(NanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (UuidRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (NanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/'.$post->uuid)->assertSuccessful();
+        $this->get('/posts/' . $post->uuid)->assertSuccessful();
         $this->get(route('posts.show', $post))->assertSuccessful();
     }
 
     /** @test */
     public function it_fails_on_invalid_default_uuid_field_value()
     {
-        $post = factory(UuidRouteBoundPost::class)->create();
+        $post = factory(NanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (UuidRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (NanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/'.$post->custom_uuid)->assertNotFound();
-        $this->get(route('posts.show', $post->custom_uuid))->assertNotFound();
+        $this->get('/posts/' . $post->custom_nanoid)->assertNotFound();
+        $this->get(route('posts.show', $post->custom_nanoid))->assertNotFound();
     }
 
     /** @test */
-    public function it_binds_to_custom_uuid_field()
+    public function it_binds_to_custom_nanoid_field()
     {
-        $post = factory(CustomUuidRouteBoundPost::class)->create();
+        $post = factory(CustomNanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (CustomUuidRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (CustomNanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/'.$post->custom_uuid)->assertSuccessful();
+        $this->get('/posts/' . $post->custom_nanoid)->assertSuccessful();
         $this->get(route('posts.show', $post))->assertSuccessful();
     }
 
     /** @test */
-    public function it_fails_on_invalid_custom_uuid_field_value()
+    public function it_fails_on_invalid_custom_nanoid_field_value()
     {
-        $post = factory(CustomUuidRouteBoundPost::class)->create();
+        $post = factory(CustomNanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (CustomUuidRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post}', function (CustomNanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/'.$post->uuid)->assertNotFound();
+        $this->get('/posts/' . $post->uuid)->assertNotFound();
         $this->get(route('posts.show', $post->uuid))->assertNotFound();
     }
 
     /** @test */
     public function it_binds_to_declared_uuid_column_instead_of_default_when_custom_key_used()
     {
-        $post = factory(MultipleUuidRouteBoundPost::class)->create();
+        $post = factory(MultipleNanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_uuid}', function (MultipleUuidRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_nanoid}', function (MultipleNanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/'.$post->custom_uuid)->assertSuccessful();
+        $this->get('/posts/' . $post->custom_nanoid)->assertSuccessful();
         $this->get(route('posts.show', $post))->assertSuccessful();
     }
 
     /** @test */
     public function it_fails_on_invalid_uuid_when_custom_route_key_used()
     {
-        $post = factory(MultipleUuidRouteBoundPost::class)->create();
+        $post = factory(MultipleNanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_uuid}', function (MultipleUuidRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_nanoid}', function (MultipleNanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/'.$post->uuid)->assertNotFound();
+        $this->get('/posts/' . $post->uuid)->assertNotFound();
         $this->get(route('posts.show', $post->uuid))->assertNotFound();
     }
 }

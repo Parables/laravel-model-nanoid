@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<ruleset name="PHP_CodeSniffer">
+
+    <description>PHPCS configuration file.</description>
+    <!-- check all files in the app directory, feel free to add more files with:<file>FOLDER NAME</file>-->
+    <file>app</file>
+    <file>bootstrap</file>
+    <file>config</file>
+    <file>database</file>
+    <file>resources</file>
+    <file>routes</file>
+    <!-- <file>tests</file> -->
+
+    <!-- exclude our migrations directory from the violation check-->
+    <exclude-pattern>*/migrations/*</exclude-pattern>
+    <exclude-pattern>bootstrap/cache/*</exclude-pattern>
+    <exclude-pattern>bootstrap/autoload.php</exclude-pattern>
+    <exclude-pattern>*/seeds/*</exclude-pattern>
+    <exclude-pattern>*.blade.php</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>*/*.css</exclude-pattern>
+    <exclude-pattern>*/*.xml</exclude-pattern>
+    <exclude-pattern>*/storage/*</exclude-pattern>
+    <exclude-pattern>*/docs/*</exclude-pattern>
+    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>*/cache/*</exclude-pattern>
+    <exclude-pattern>*/tests/*</exclude-pattern>
+    <exclude-pattern>_lighthouse_ide_helper.php</exclude-pattern>
+    <exclude-pattern>_ide_helper_models.php</exclude-pattern>
+
+
+    <!-- Show progression -->
+    <arg value="p"/>
+
+    <!-- ignore warnings and display ERRORS only -->
+    <arg value="np" />
+
+    <!-- Our base rule: set to PSR12-->
+    <rule ref="PSR12" />
+
+</ruleset>

@@ -33,7 +33,7 @@ In order to use this package, you simply need to import and use the trait within
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
+use Parables\NanoId\GeneratesUuid;
 
 class Post extends Model
 {
@@ -41,24 +41,24 @@ class Post extends Model
 }
 ```
 
-It is assumed that you already have a field named `uuid` in your database, which is used to store the generated value. If you wish to use a custom column name, for example if you want your primary `id` column to be a `UUID`, you can define a `uuidColumn` method in your model.
+It is assumed that you already have a field named `uuid` in your database, which is used to store the generated value. If you wish to use a custom column name, for example if you want your primary `id` column to be a `UUID`, you can define a `nanoIdColumn` method in your model.
 
 ```php
 class Post extends Model
 {
-    public function uuidColumn(): string
+    public function nanoIdColumn(): string
     {
         return 'custom_column';
     }
 }
 ```
 
-You can have multiple UUID columns in each table by specifying an array in the `uuidColumns` method. When querying using the `whereUuid` scope, the default column - specified by `uuidColumn` will be used.
+You can have multiple UUID columns in each table by specifying an array in the `nanoIdColumns` method. When querying using the `whereUuid` scope, the default column - specified by `nanoIdColumn` will be used.
 
 ```php
 class Post extends Model
 {
-    public function uuidColumns(): array
+    public function nanoIdColumns(): array
     {
         return ['uuid', 'custom_column'];
     }
@@ -73,7 +73,7 @@ By default, this package will use UUID version 4 values, however, you are welcom
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
+use Parables\NanoId\GeneratesUuid;
 
 class Post extends Model
 {
@@ -90,7 +90,7 @@ Whilst not recommended, if you _do_ choose to use a UUID as your primary model k
 
 namespace App;
 
-use Dyrynda\Database\Support\GeneratesUuid;
+use Parables\NanoId\GeneratesUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
@@ -127,7 +127,7 @@ If you use the suggested [laravel-efficient-uuid](https://github.com/michaeldyry
 namespace App;
 
 use Dyrynda\Database\Casts\EfficientUuid;
-use Dyrynda\Database\Support\GeneratesUuid;
+use Parables\NanoId\GeneratesUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
@@ -142,15 +142,15 @@ class Post extends Model
 
 ## Route model binding
 
-From 6.5.0, should you wish to leverage implicit route model binding on your `uuid` field, you may use the `BindsOnUuid` trait, which will use the configured `uuidColumn` by default.
+From 6.5.0, should you wish to leverage implicit route model binding on your `uuid` field, you may use the `BindsOnUuid` trait, which will use the configured `nanoIdColumn` by default.
 
 ```php
 <?php
 
 namespace App;
 
-use Dyrynda\Database\Support\BindsOnUuid;
-use Dyrynda\Database\Support\GeneratesUuid;
+use Parables\NanoId\BindsOnUuid;
+use Parables\NanoId\GeneratesUuid;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
@@ -207,3 +207,13 @@ It’s now common knowledge that one of the best tools to tackle the climate cri
 You can buy trees [here](https://plant.treeware.earth/michaeldyrynda/laravel-model-uuid)
 
 Read more about Treeware at [treeware.earth](https://treeware.earth)
+
+## Tools
+
+- [ID size calculator](https://github.com/CyberAP/nanoid-dictionary) shows collision probability when adjusting the ID alphabet or size.
+
+## Credits
+
+- Andrey Sitnik [ai](https://github.com/ai) for [Nano ID](https://github.com/ai/nanoid).  
+
+- Stanislav Lashmanov [CyberAP](https://github.com/CyberAP) for [Predefined character sets to use with Nano ID](https://github.com/CyberAP/nanoid-dictionary).

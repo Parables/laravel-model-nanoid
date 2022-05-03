@@ -55,12 +55,12 @@ class UuidTest extends TestCase
     }
 
     /** @test */
-    public function you_can_find_a_model_by_custom_uuid_parameter()
+    public function you_can_find_a_model_by_custom_nanoid_parameter()
     {
         $uuid = '6499332d-25e1-4d75-bd92-c6ded0820fb3';
-        $custom_uuid = '99635d83-05bc-424f-bf3f-395ea7a5b323';
+        $custom_nanoid = '99635d83-05bc-424f-bf3f-395ea7a5b323';
 
-        MultipleUuidPost::create(['title' => 'test post', 'uuid' => $uuid, 'custom_uuid' => $custom_uuid]);
+        MultipleUuidPost::create(['title' => 'test post', 'uuid' => $uuid, 'custom_nanoid' => $custom_nanoid]);
 
         $post1 = MultipleUuidPost::whereUuid($uuid)->first();
         $this->assertInstanceOf(MultipleUuidPost::class, $post1);
@@ -70,9 +70,9 @@ class UuidTest extends TestCase
         $this->assertInstanceOf(MultipleUuidPost::class, $post2);
         $this->assertSame($uuid, $post2->uuid);
 
-        $post3 = MultipleUuidPost::whereUuid($custom_uuid, 'custom_uuid')->first();
+        $post3 = MultipleUuidPost::whereUuid($custom_nanoid, 'custom_nanoid')->first();
         $this->assertInstanceOf(MultipleUuidPost::class, $post3);
-        $this->assertSame($custom_uuid, $post3->custom_uuid);
+        $this->assertSame($custom_nanoid, $post3->custom_nanoid);
     }
 
     /** @test */
@@ -102,13 +102,13 @@ class UuidTest extends TestCase
     /** @test */
     public function you_can_search_by_array_of_uuids_for_custom_column()
     {
-        $first = CustomCastUuidPost::create(['title' => 'first post', 'custom_uuid' => '8ab48e77-d9cd-4fe7-ace5-a5a428590c18']);
-        $second = CustomCastUuidPost::create(['title' => 'second post', 'custom_uuid' => 'c7c26456-ddb0-45cd-9b1c-318296cce7a3']);
+        $first = CustomCastUuidPost::create(['title' => 'first post', 'custom_nanoid' => '8ab48e77-d9cd-4fe7-ace5-a5a428590c18']);
+        $second = CustomCastUuidPost::create(['title' => 'second post', 'custom_nanoid' => 'c7c26456-ddb0-45cd-9b1c-318296cce7a3']);
 
         $this->assertEquals(2, CustomCastUuidPost::whereUuid([
             '8ab48e77-d9cd-4fe7-ace5-A5A428590C18',
             'c7c26456-ddb0-45cd-9b1c-318296cce7a3',
-        ], 'custom_uuid')->count());
+        ], 'custom_nanoid')->count());
     }
 
     /** @test */
@@ -137,7 +137,7 @@ class UuidTest extends TestCase
     {
         $post = CustomCastUuidPost::create(['title' => 'test post']);
 
-        $this->assertNotNull($post->custom_uuid);
+        $this->assertNotNull($post->custom_nanoid);
     }
 
     /** @test */
@@ -190,7 +190,7 @@ class UuidTest extends TestCase
     {
         $post = CustomUuidPost::create(['title' => 'test-post']);
 
-        $this->assertNotNull($post->custom_uuid);
+        $this->assertNotNull($post->custom_nanoid);
     }
 
     /**
@@ -288,7 +288,7 @@ class UuidTest extends TestCase
     {
         return [
             'regular uuid' => [Post::class, 'uuid'],
-            'custom uuid' => [CustomUuidPost::class, 'custom_uuid'],
+            'custom uuid' => [CustomUuidPost::class, 'custom_nanoid'],
             'efficient uuid' => [EfficientUuidPost::class, 'efficient_uuid'],
         ];
     }

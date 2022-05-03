@@ -2,12 +2,12 @@
 
 namespace Tests\Fixtures;
 
-use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Parables\NanoId\GeneratesNanoId;
 
 abstract class Model extends BaseModel
 {
-    use GeneratesUuid;
+    use GeneratesNanoId;
 
     /**
      * {@inheritdoc}
