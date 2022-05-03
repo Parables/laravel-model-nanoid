@@ -143,24 +143,7 @@ $post = Post::whereNanoId([$first, $second], 'custom_column')->get();
 
 ## Route model binding
 
-From 6.5.0, should you wish to leverage implicit route model binding on your `nanoid` field, you may use the `BindsOnUuid` trait, which will use the configured `nanoIdColumn` by default.
-
-```php
-<?php
-
-namespace App;
-
-use Parables\NanoId\BindsOnUuid;
-use Parables\NanoId\GeneratesNanoId;
-use Illuminate\Database\Eloquent\Model;
-
-class Post extends Model
-{
-    use BindsOnUuid, GeneratesUuid;
-}
-```
-
-Should you require additional control over the binding, or are using < 6.5.0 of this package, you may override the `getRouteKeyName` method directly.
+This package will automatically resolve your routes that uses the nanoid. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
 
 ```php
 public function getRouteKeyName(): string
@@ -169,34 +152,19 @@ public function getRouteKeyName(): string
 }
 ```
 
-_If you are using the [laravel-efficient-nanoid](https://github.com/michaeldyrynda/laravel-efficient-nanoid) package, implicit route model binding won't work out of the box._
-
-Laravel will execute the query using the string representation of the `nanoid` field when querying against the binary data stored in the database. In this instance, you will need to explicitly bind the parameter using the included scope in your `RouteServiceProvider`:
-
-```php
-// app/Providers/RouteServiceProvider.php
-
-public function boot()
-{
-    Route::bind('post', function ($post) {
-        return \App\Post::whereNanoId($post)->first();
-    });
-}
-```
-
 ## Installation
 
 This package is installed via [Composer](https://getcomposer.org/). To install, run the following command.
 
 ```bash
-composer require dyrynda/laravel-model-nanoid
+composer require parables/laravel-model-nanoid
 ```
 
 ## Support
 
-If you are having general issues with this package, feel free to contact me on [Twitter](https://twitter.com/michaeldyrynda).
+If you are having general issues with this package, feel free to contact me on [Twitter](https://twitter.com/pboltnoel).
 
-If you believe you have found an issue, please report it using the [GitHub issue tracker](https://github.com/michaeldyrynda/laravel-model-nanoid/issues), or better yet, fork the repository and submit a pull request.
+If you believe you have found an issue, please report it using the [GitHub issue tracker](https://github.com/Parables/laravel-model-nanoid/issues), or better yet, fork the repository and submit a pull request.
 
 If you're using this package, I'd love to hear your thoughts. Thanks!
 
@@ -217,5 +185,5 @@ Read more about Treeware at [treeware.earth](https://treeware.earth)
 ## Credits
 
 -   Andrey Sitnik [ai](https://github.com/ai) for [Nano ID](https://github.com/ai/nanoid).
-
+-   Michael Dyrynda [michaeldyrynda](https://github.com/michaeldyrynda) for [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid).
 -   Stanislav Lashmanov [CyberAP](https://github.com/CyberAP) for [Predefined character sets to use with Nano ID](https://github.com/CyberAP/nanoid-dictionary).
