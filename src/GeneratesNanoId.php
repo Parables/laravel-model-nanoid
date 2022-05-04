@@ -63,32 +63,33 @@ trait GeneratesNanoId
         return [$this->nanoIdColumn()];
     }
 
-    private static function parseColumns(array $arr)
+    private static function mapColumns($key, $value)
     {
-        function mapColumns($key, $value)
-        {
-            if (is_numeric($key)) {
-                if (is_string($value)) {
-                    return [
-                        'key' => $value,
-                        'size' => NanoId::SIZE_DEFAULT,
-                        'alphabets' => NanoId::ALPHABET_DEFAULT
-                    ];
-                } elseif (is_array($value) && array_key_exists('key', $value)) {
-                    return [
-                        'key' => $value['key'],
-                        'size' => $value['size'] ?: NanoId::SIZE_DEFAULT,
-                        'alphabets' => $value['alphabets'] ?: NanoId::ALPHABET_DEFAULT
-                    ];
-                }
-            } elseif (is_string($key)) {
+        if (is_numeric($key)) {
+            if (is_string($value)) {
                 return [
-                    'key' => array_key_exists('key', $value) ?  $value['key'] :  $key,
+                    'key' => $value,
+                    'size' => NanoId::SIZE_DEFAULT,
+                    'alphabets' => NanoId::ALPHABET_DEFAULT
+                ];
+            } elseif (is_array($value) && array_key_exists('key', $value)) {
+                return [
+                    'key' => $value['key'],
                     'size' => $value['size'] ?: NanoId::SIZE_DEFAULT,
                     'alphabets' => $value['alphabets'] ?: NanoId::ALPHABET_DEFAULT
                 ];
             }
+        } elseif (is_string($key)) {
+            return [
+                'key' => array_key_exists('key', $value) ?  $value['key'] :  $key,
+                'size' => $value['size'] ?: NanoId::SIZE_DEFAULT,
+                'alphabets' => $value['alphabets'] ?: NanoId::ALPHABET_DEFAULT
+            ];
         }
+    }
+
+    private static function parseColumns(array $arr)
+    {
         return array_filter(
             array_map(
                 'mapColumns',
