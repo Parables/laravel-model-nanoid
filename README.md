@@ -23,6 +23,15 @@ Read its documentation for more information.
 
 > **Note**: this package explicitly does not disable auto-incrementing on your Eloquent models. In terms of database indexing, it is generally more efficient to use auto-incrementing integers for your internal querying. Indexing your `nanoid` column will make lookups against that column fast, without impacting queries between related models.
 
+
+## Installation
+
+This package is installed via [Composer](https://getcomposer.org/). To install, run the following command.
+
+```bash
+composer require parables/laravel-model-nanoid
+```
+
 ## Code Samples
 
 In order to use this package, you simply need to import and use the trait within your Eloquent models.
@@ -163,15 +172,6 @@ The following options are available for the alphabet key.
             // Same as ALPHABET_ALPHA_NUMERIC_READABLE but with removed vowels and following letters: 3, 4, x, X, V.
     NanoId::ALPHABET_ALPHA_NUMERIC_READABLE_SAFE => '6789bcdfghjkmnpqrtwzBCDFGHJKLMNPQRTW'
     NanoId::ALPHABET_UUID => '0123456789abcdef'
-```
-
-
-## Installation
-
-This package is installed via [Composer](https://getcomposer.org/). To install, run the following command.
-
-```bash
-composer require parables/laravel-model-nanoid
 ```
 
 ## Support
