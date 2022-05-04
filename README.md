@@ -53,6 +53,59 @@ class Post extends Model
 }
 ```
 
+
+Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to configure your model for this setup correctly. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
+
+```php
+<?php
+
+namespace App;
+
+use Parables\NanoId\GeneratesNanoId;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use GeneratesNanoId;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+    
+     public function nanoIdColumn(): string
+    {
+        return 'id';
+    }
+}
+```
+
+This trait also provides a query scope which will allow you to easily find your records based on their NanoID, and respects any custom field name you choose.
+
+```php
+// Find a specific post with the default (nanoid) column name
+$post = Post::whereNanoId($nanoid)->first();
+
+// Find multiple posts with the default (nanoid) column name
+$post = Post::whereNanoId([$first, $second])->get();
+
+// Find a specific post with a custom column name
+$post = Post::whereNanoId($nanoid, 'custom_column')->first();
+
+// Find multiple posts with a custom column name
+$post = Post::whereNanoId([$first, $second], 'custom_column')->get();
+```
+
+## Route model binding
+
+This package will automatically resolve your routes that uses the nanoid. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
+
+```php
+public function getRouteKeyName(): string
+{
+    return 'nanoid';
+}
+```
+
 You can have multiple NanoID columns in each table by specifying an array in the `nanoIdColumns` method. 
 
 If you use the `nanoIdColumns` method, then **first** element in the array must be your dafault NanoId column returned by the `nanoIdColumn` method which by default is `nanoid`. 
@@ -112,52 +165,6 @@ The following options are available for the alphabet key.
     NanoId::ALPHABET_UUID => '0123456789abcdef'
 ```
 
-Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to configure your model for this setup correctly. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
-
-```php
-<?php
-
-namespace App;
-
-use Parables\NanoId\GeneratesNanoId;
-use Illuminate\Database\Eloquent\Model;
-
-class Post extends Model
-{
-    use GeneratesNanoId;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
-}
-```
-
-This trait also provides a query scope which will allow you to easily find your records based on their NanoID, and respects any custom field name you choose.
-
-```php
-// Find a specific post with the default (nanoid) column name
-$post = Post::whereNanoId($nanoid)->first();
-
-// Find multiple posts with the default (nanoid) column name
-$post = Post::whereNanoId([$first, $second])->get();
-
-// Find a specific post with a custom column name
-$post = Post::whereNanoId($nanoid, 'custom_column')->first();
-
-// Find multiple posts with a custom column name
-$post = Post::whereNanoId([$first, $second], 'custom_column')->get();
-```
-
-## Route model binding
-
-This package will automatically resolve your routes that uses the nanoid. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
-
-```php
-public function getRouteKeyName(): string
-{
-    return 'nanoid';
-}
-```
 
 ## Installation
 
