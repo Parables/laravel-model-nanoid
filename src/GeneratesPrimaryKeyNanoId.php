@@ -20,16 +20,18 @@ use Illuminate\Database\Eloquent\Builder;
  *
  * @method static \Illuminate\Database\Eloquent\Builder  whereNanoID(string $nanoid)
  */
-trait GeneratesNanoId
+trait GeneratesPrimaryKeyNanoId
 {
     /**
      * Boot the trait, adding a creating observer.
      *
-     * Create a new NanoId if the model's attribute has not been set
+     * Create a new NanoId if the model's attribute has not been set as the primary key.
+     *
+     * This trait explicitly disables auto-incrementing on your Eloquent models
      *
      * @return void
      */
-    public static function bootGeneratesNanoId(): void
+    public static function bootGeneratesPrimaryKeyNanoId(): void
     {
         static::creating(
             function ($model) {
@@ -39,9 +41,27 @@ trait GeneratesNanoId
                         $model->{$columnName} = NanoId::nanoId(size: $column['size'], alphabet: $column['alphabets']);
                     }
                 }
+
+                $primaryKeyColumn = $model->nanoIdColumn();
+                $model->$primaryKeyColumn = NanoId::nanoId();
+                $model->keyType = 'string';
+                $model->incrementing = false;
+                $model->{$model->getKeyName()} = $model->{$model->getKeyName()} ?: (string) NanoId::nanoId();
             }
         );
     }
+
+
+    public function getIncrementing()
+    {
+        return false;
+    }
+
+    public function getKeyType()
+    {
+        return 'string';
+    }
+
 
     /**
      * The name of the column that should be used for the NanoID.
@@ -50,7 +70,7 @@ trait GeneratesNanoId
      */
     public function nanoIdColumn(): string
     {
-        return 'nanoid';
+        return 'id';
     }
 
     /**
