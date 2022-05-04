@@ -23,6 +23,15 @@ Read its documentation for more information.
 
 > **Note**: this package explicitly does not disable auto-incrementing on your Eloquent models. In terms of database indexing, it is generally more efficient to use auto-incrementing integers for your internal querying. Indexing your `nanoid` column will make lookups against that column fast, without impacting queries between related models.
 
+
+## Installation
+
+This package is installed via [Composer](https://getcomposer.org/). To install, run the following command.
+
+```bash
+composer require parables/laravel-model-nanoid
+```
+
 ## Code Samples
 
 In order to use this package, you simply need to import and use the trait within your Eloquent models.
@@ -48,12 +57,69 @@ class Post extends Model
 {
     public function nanoIdColumn(): string
     {
-        return 'custom_column';
+        return 'id';
     }
 }
 ```
 
-You can have multiple NanoID columns in each table by specifying an array in the `nanoIdColumns` method. When querying using the `whereNanoId` scope, the default column - specified by `nanoIdColumn` will be used.
+
+Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to configure your model for this setup correctly. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
+
+```php
+<?php
+
+namespace App;
+
+use Parables\NanoId\GeneratesNanoId;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model
+{
+    use GeneratesNanoId;
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+    
+     public function nanoIdColumn(): string
+    {
+        return 'id';
+    }
+}
+```
+
+This trait also provides a query scope which will allow you to easily find your records based on their NanoID, and respects any custom field name you choose.
+
+```php
+// Find a specific post with the default (nanoid) column name
+$post = Post::whereNanoId($nanoid)->first();
+
+// Find multiple posts with the default (nanoid) column name
+$post = Post::whereNanoId([$first, $second])->get();
+
+// Find a specific post with a custom column name
+$post = Post::whereNanoId($nanoid, 'custom_column')->first();
+
+// Find multiple posts with a custom column name
+$post = Post::whereNanoId([$first, $second], 'custom_column')->get();
+```
+
+## Route model binding
+
+This package will automatically resolve your routes that uses the nanoid. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
+
+```php
+public function getRouteKeyName(): string
+{
+    return 'nanoid';
+}
+```
+
+You can have multiple NanoID columns in each table by specifying an array in the `nanoIdColumns` method. 
+
+If you use the `nanoIdColumns` method, then **first** element in the array must be your dafault NanoId column returned by the `nanoIdColumn` method which by default is `nanoid`. 
+
+When querying using the `whereNanoId` scope, the default column - specified by `nanoIdColumn` will be used.
 
 ```php
 class Post extends Model
@@ -106,61 +172,6 @@ The following options are available for the alphabet key.
             // Same as ALPHABET_ALPHA_NUMERIC_READABLE but with removed vowels and following letters: 3, 4, x, X, V.
     NanoId::ALPHABET_ALPHA_NUMERIC_READABLE_SAFE => '6789bcdfghjkmnpqrtwzBCDFGHJKLMNPQRTW'
     NanoId::ALPHABET_UUID => '0123456789abcdef'
-```
-
-Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to configure your model for this setup correctly. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
-
-```php
-<?php
-
-namespace App;
-
-use Parables\NanoId\GeneratesNanoId;
-use Illuminate\Database\Eloquent\Model;
-
-class Post extends Model
-{
-    use GeneratesNanoId;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
-}
-```
-
-This trait also provides a query scope which will allow you to easily find your records based on their NanoID, and respects any custom field name you choose.
-
-```php
-// Find a specific post with the default (nanoid) column name
-$post = Post::whereNanoId($nanoid)->first();
-
-// Find multiple posts with the default (nanoid) column name
-$post = Post::whereNanoId([$first, $second])->get();
-
-// Find a specific post with a custom column name
-$post = Post::whereNanoId($nanoid, 'custom_column')->first();
-
-// Find multiple posts with a custom column name
-$post = Post::whereNanoId([$first, $second], 'custom_column')->get();
-```
-
-## Route model binding
-
-This package will automatically resolve your routes that uses the nanoid. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
-
-```php
-public function getRouteKeyName(): string
-{
-    return 'nanoid';
-}
-```
-
-## Installation
-
-This package is installed via [Composer](https://getcomposer.org/). To install, run the following command.
-
-```bash
-composer require parables/laravel-model-nanoid
 ```
 
 ## Support
