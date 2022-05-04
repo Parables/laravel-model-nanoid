@@ -48,12 +48,16 @@ class Post extends Model
 {
     public function nanoIdColumn(): string
     {
-        return 'custom_column';
+        return 'id';
     }
 }
 ```
 
-You can have multiple NanoID columns in each table by specifying an array in the `nanoIdColumns` method. When querying using the `whereNanoId` scope, the default column - specified by `nanoIdColumn` will be used.
+You can have multiple NanoID columns in each table by specifying an array in the `nanoIdColumns` method. 
+
+If you use the `nanoIdColumns` method, then **first** element in the array must be your dafault NanoId column returned by the `nanoIdColumn` method which by default is `nanoid`. 
+
+When querying using the `whereNanoId` scope, the default column - specified by `nanoIdColumn` will be used.
 
 ```php
 class Post extends Model
