@@ -16,13 +16,12 @@ A tiny, secure, URL-friendly, unique string ID generator for PHP.
 This package is PHP implementation of [ai's](https://github.com/ai) [nanoid](https://github.com/ai/nanoid).
 Read its documentation for more information.
 
-- **Fast.** It is faster than NanoID.
-- **Safe.** It uses cryptographically strong random APIs. Can be used in clusters.
-- **Compact.** It uses a larger alphabet than NanoID (`A-Za-z0-9_-`). So ID size was reduced from 36 to 21 symbols.
-- **Customizable.** Size, alphabet and Random Bytes Generator may be overridden.
+-   **Fast.** It is faster than NanoID.
+-   **Safe.** It uses cryptographically strong random APIs. Can be used in clusters.
+-   **Compact.** It uses a larger alphabet than NanoID (`A-Za-z0-9_-`). So ID size was reduced from 36 to 21 symbols.
+-   **Customizable.** Size, alphabet and Random Bytes Generator may be overridden.
 
 > **Note**: this package explicitly does not disable auto-incrementing on your Eloquent models. In terms of database indexing, it is generally more efficient to use auto-incrementing integers for your internal querying. Indexing your `nanoid` column will make lookups against that column fast, without impacting queries between related models.
-
 
 ## Installation
 
@@ -62,8 +61,7 @@ class Post extends Model
 }
 ```
 
-
-Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to configure your model for this setup correctly. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
+> Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to add the `NanoIdAsPrimaryKey` to your model. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
 
 ```php
 <?php
@@ -76,15 +74,7 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     use GeneratesNanoId;
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
-    
-     public function nanoIdColumn(): string
-    {
-        return 'id';
-    }
+    use NanoIdAsPrimaryKey;
 }
 ```
 
@@ -106,7 +96,7 @@ $post = Post::whereNanoId([$first, $second], 'custom_column')->get();
 
 ## Route model binding
 
-This package will automatically resolve your routes that uses the nanoid. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
+Should you wish to leverage implicit route model binding on your `nanoid` field, you may use the `BindsOnNanoId` trait, which will use the value returned by `nanoIdColumn()`. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
 
 ```php
 public function getRouteKeyName(): string
@@ -115,11 +105,11 @@ public function getRouteKeyName(): string
 }
 ```
 
-You can have multiple NanoID columns in each table by specifying an array in the `nanoIdColumns` method. 
+You can generate multiple NanoID columns for a model by returning an array of column names in the `nanoIdColumns()` method.
 
-If you use the `nanoIdColumns` method, then **first** element in the array must be your dafault NanoId column returned by the `nanoIdColumn` method which by default is `nanoid`. 
+If you use the `nanoIdColumns()` method, then **first** element in the array must be the value returned by the `nanoIdColumn()` method which by default is `nanoid`. If you overwrite the `nanoIdColumn()` method, put its return value as the **first** element in the `nanoIdColumns()` return array.
 
-When querying using the `whereNanoId` scope, the default column - specified by `nanoIdColumn` will be used.
+When querying using the `whereNanoId()` scope, the default column - specified by `nanoIdColumn()` will be used.
 
 ```php
 class Post extends Model
@@ -136,11 +126,11 @@ The `nanoIdColumns` must return an array. You can customize the generated `NanoI
 ```php
   public function nanoIdColumns(): array
     {
-        // Option 1: array of column names: will use the default generator
+        // Option 1: array of column names: this will use the default size and alphabets
         return ['nanoid', 'custom_column'];
 
         // Option 2: an array where each element is an array with a required 'key' property.
-        // no id will be generated if key is null. 'size' and 'alphabet' are optional
+        // no id will be generated if key is null. 'size' and 'alphabet' properties are optional
         return [
             ['key'=>'nanoid'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
             ['key'=>'column_one', 'size' => 6, 'alphabets'=> NanoId::ALPHABET_NUMBERS],
@@ -194,10 +184,10 @@ Read more about Treeware at [treeware.earth](https://treeware.earth)
 
 ## Tools
 
-- [ID size calculator](https://github.com/CyberAP/nanoid-dictionary) shows collision probability when adjusting the ID alphabet or size.
+-   [ID size calculator](https://github.com/CyberAP/nanoid-dictionary) shows collision probability when adjusting the ID alphabet or size.
 
 ## Credits
 
-- Andrey Sitnik [ai](https://github.com/ai) for [Nano ID](https://github.com/ai/nanoid).
-- Michael Dyrynda [michaeldyrynda](https://github.com/michaeldyrynda) for [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid).
-- Stanislav Lashmanov [CyberAP](https://github.com/CyberAP) for [Predefined character sets to use with Nano ID](https://github.com/CyberAP/nanoid-dictionary).
+-   Andrey Sitnik [ai](https://github.com/ai) for [Nano ID](https://github.com/ai/nanoid).
+-   Michael Dyrynda [michaeldyrynda](https://github.com/michaeldyrynda) for [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid).
+-   Stanislav Lashmanov [CyberAP](https://github.com/CyberAP) for [Predefined character sets to use with Nano ID](https://github.com/CyberAP/nanoid-dictionary).

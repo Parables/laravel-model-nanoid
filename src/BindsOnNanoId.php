@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @copyright 2017 Parables Boltnoel
  * @license   MIT <https://github.com/parables>
  */
-trait GeneratesNanoId
+trait BindsOnNanoId
 {
     /**
      * Get the route key for the model.
