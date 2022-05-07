@@ -2,10 +2,7 @@
 
 namespace Parables\NanoId;
 
-use Illuminate\Support\Arr;
 use Snortlin\NanoId\NanoId;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * NanoID generation trait.

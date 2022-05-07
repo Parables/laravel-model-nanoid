@@ -4,7 +4,6 @@ namespace Parables\NanoId;
 
 use Illuminate\Support\Arr;
 use Snortlin\NanoId\NanoId;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -22,27 +21,6 @@ use Illuminate\Database\Eloquent\Builder;
  */
 trait GeneratesNanoId
 {
-    /**
-     * Boot the trait, adding a creating observer.
-     *
-     * Create a new NanoId if the model's attribute has not been set
-     *
-     * @return void
-     */
-    public static function bootGeneratesNanoId(): void
-    {
-        static::creating(
-            function ($model) {
-                foreach (self::parseColumns($model->nanoIdColumns()) as $column) {
-                    $columnName = $column['key'];
-                    if (!isset($model->attributes[$columnName])) {
-                        $model->{$columnName} = NanoId::nanoId(size: $column['size'], alphabet: $column['alphabets']);
-                    }
-                }
-            }
-        );
-    }
-
     /**
      * The name of the column that should be used for the NanoID.
      *
@@ -62,43 +40,6 @@ trait GeneratesNanoId
     {
         return [$this->nanoIdColumn()];
     }
-
-
-    private static function parseColumns(array $arr)
-    {
-        $mappedColumns = array_map(
-            fn ($key, $value): array
-            =>
-            is_numeric($key)
-                ? (is_string($value)
-                    ? [
-                        'key' => $value,
-                        'size' => NanoId::SIZE_DEFAULT,
-                        'alphabets' => NanoId::ALPHABET_DEFAULT
-                    ]
-                    : (
-                        (is_array($value) && array_key_exists('key', $value)) ?
-                        [
-                            'key' => $value['key'],
-                            'size' => $value['size'] ?: NanoId::SIZE_DEFAULT,
-                            'alphabets' => $value['alphabets'] ?: NanoId::ALPHABET_DEFAULT
-                        ]
-                        : null
-                    )
-                )
-                : (is_string($key)
-                    ?                [
-                        'key' => array_key_exists('key', $value) ?  $value['key'] :  $key,
-                        'size' => $value['size'] ?: NanoId::SIZE_DEFAULT,
-                        'alphabets' => $value['alphabets'] ?: NanoId::ALPHABET_DEFAULT
-                    ]
-                    : null),
-            array_keys($arr),
-            array_values($arr)
-        );
-        return array_filter($mappedColumns);
-    }
-
 
     /**
      * Scope queries to find by NanoID.
@@ -122,26 +63,85 @@ trait GeneratesNanoId
         );
     }
 
-    /**
-     * Route bind desired nanoid field
-     * Default 'nanoid' column name has been set.
-     *
-     * @param  string  $value
-     * @param  null|string  $field
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function resolveRouteBinding($value, $field = null): Model
+    public static function bootGeneratesNanoId(): void
     {
-        return self::whereNanoId($value, $field)->firstOrFail();
+        static::creating(
+            function ($model) {
+                foreach (self::transformNanoIdColumns($model->nanoIdColumns()) as $column) {
+                    $columnName = $column['key'];
+                    if (!isset($model->attributes[$columnName])) {
+                        $model->{$columnName} = NanoId::nanoId(size: $column['size'], alphabet: $column['alphabets']);
+                    }
+                }
+            }
+        );
     }
 
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    public function getRouteKeyName(): string
+    private static function transformNanoIdColumns(array $arr)
     {
-        return $this->nanoIdColumn();
+        $mappedColumns = array_map(
+            array('self::transformNanoIdColumnsCallback'),
+            array_keys($arr),
+            array_values($arr)
+        );
+        return array_filter($mappedColumns);
+    }
+
+    private static function transformNanoIdColumnsCallback($key, $value)
+    {
+        return self::getColumnFromNumericKey(key: $key, value: $value);
+    }
+
+
+    private static function getColumnFromNumericKey($key, $value)
+    {
+        return is_numeric($key)
+            ? self::getColumnFromStringValue(value: $value)
+            : self::getColumnFromStringKey(key: $key, value: $value);
+    }
+
+    private static function getColumnFromStringValue($value)
+    {
+        return is_string($value) ?
+            [
+                'key' => $value,
+                'size' => NanoId::SIZE_DEFAULT,
+                'alphabets' => NanoId::ALPHABET_DEFAULT
+            ] : self::getColumnFromArrayValue(value: $value);
+    }
+
+    private static function getColumnFromArrayValue($value)
+    {
+        return (is_array($value) && array_key_exists('key', $value)) ?
+            [
+                'key' => $value['key'],
+                'size' =>  self::getSizeFromArrayValueOrDefaultSize(value: $value),
+                'alphabets' => self::getAlphabetsFromArrayValueOrDefaultAlphabets(value: $value)
+            ] : null;
+    }
+
+    private static function getColumnFromStringKey($key, $value)
+    {
+        return is_string($key) ?
+            [
+                'key' => self::getKeyFromArrayValueOrDefaultKey(key: $key, value: $value),
+                'size' => self::getSizeFromArrayValueOrDefaultSize(value: $value),
+                'alphabets' => self::getAlphabetsFromArrayValueOrDefaultAlphabets(value: $value)
+            ] : null;
+    }
+
+    private static function getKeyFromArrayValueOrDefaultKey(string $key, array $value)
+    {
+        return array_key_exists('key', $value) && is_string($value['key']) ?  $value['key'] :  $key;
+    }
+
+    private static function getSizeFromArrayValueOrDefaultSize(array $value)
+    {
+        return $value['size'] && is_int($value['size']) ? $value['size'] : NanoId::SIZE_DEFAULT;
+    }
+
+    private static function getAlphabetsFromArrayValueOrDefaultAlphabets(array $value)
+    {
+        return $value['alphabets'] ?: NanoId::ALPHABET_DEFAULT;
     }
 }
