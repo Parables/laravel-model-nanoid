@@ -51,14 +51,4 @@ trait NanoIdAsPrimaryKey
     {
         return 'string';
     }
-
-    /**
-     * The name of the column that should be used for the NanoID.
-     *
-     * @return string
-     */
-    public function nanoIdColumn(): string
-    {
-        return 'id';
-    }
 }
