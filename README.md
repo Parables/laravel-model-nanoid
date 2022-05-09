@@ -61,21 +61,31 @@ class Post extends Model
 }
 ```
 
-> Whilst not recommended, if you _do_ choose to use a NanoID as your primary model key (`id`), be sure to add the `NanoIdAsPrimaryKey` to your model. Not updating these properties will lead to Laravel attempting to convert your `id` column to an integer, which will be cast to `0`.
+## Use NanoId as primary key
+
+If you choose to use a NanoID as your primary model key (`id`), then use `GeneratesNanoIdAsPrimaryKey` trait on your model.
 
 ```php
 <?php
 
 namespace App;
 
-use Parables\NanoId\GeneratesNanoId;
+use Parables\NanoId\GeneratesNanoIdAsPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use GeneratesNanoId;
-    use NanoIdAsPrimaryKey;
+    use GeneratesNanoIdAsPrimaryKey;
 }
+```
+
+And update your migrations
+
+```diff
+ Schema::create('users', function (Blueprint $table) {
+-     $table->id();
++     $table->string('id')->primary();
+ });
 ```
 
 This trait also provides a query scope which will allow you to easily find your records based on their NanoID, and respects any custom field name you choose.
