@@ -80,7 +80,7 @@ trait GeneratesNanoId
     private static function transformNanoIdColumns(array $arr)
     {
         $mappedColumns = array_map(
-            array('self::transformNanoIdColumnsCallback'),
+            'self::transformNanoIdColumnsCallback',
             array_keys($arr),
             array_values($arr)
         );
