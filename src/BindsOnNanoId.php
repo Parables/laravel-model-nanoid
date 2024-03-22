@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait BindsOnNanoId
 {
+    abstract public function nanoIdColumn(): string;
+
     /**
      * Get the route key for the model.
      *

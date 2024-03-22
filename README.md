@@ -70,12 +70,12 @@ If you choose to use a NanoID as your primary model key (`id`), then use `Genera
 
 namespace App;
 
-use Parables\NanoId\GeneratesNanoIdAsPrimaryKey;
+use Parables\NanoId\NanoIdAsPrimaryKey;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use GeneratesNanoIdAsPrimaryKey;
+    use NanoIdAsPrimaryKey;
 }
 ```
 

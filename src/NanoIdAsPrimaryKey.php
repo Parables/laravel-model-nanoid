@@ -19,28 +19,32 @@ use Snortlin\NanoId\NanoId;
  */
 trait NanoIdAsPrimaryKey
 {
-    /**
-     * Boot the trait, adding a creating observer.
-     *
-     * Create a new NanoId if the model's attribute has not been set as the primary key.
-     *
-     * This trait explicitly disables auto-incrementing on your Eloquent models
-     *
-     * @return void
-     */
-    public static function bootNanoIdAsPrimaryKey(): void
-    {
-        static::creating(
-            function ($model) {
-                $primaryKeyColumn = $model->nanoIdColumn();
-                $model->$primaryKeyColumn = NanoId::nanoId();
-                $model->keyType = 'string';
-                $model->incrementing = false;
-                $model->{$model->getKeyName()} = $model->{$model->getKeyName()} ?: (string) NanoId::nanoId();
-            }
-        );
-    }
+    use GeneratesNanoId;
+    use BindsOnNanoId;
 
+ /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+     /**
+     * The data type of the primary key ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
+     * The name of the column that should be used for the NanoID.
+     *
+     * @return string
+     */
+    public function nanoIdColumn(): string
+    {
+        return 'id';
+    }
 
     public function getIncrementing()
     {
