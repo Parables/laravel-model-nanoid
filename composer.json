@@ -41,10 +41,5 @@
     "prefer-stable": true,
     "config": {
         "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-main": "6.x-dev"
-        }
     }
 }
