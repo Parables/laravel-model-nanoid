@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Huge thanks to Micheal Dyrynda, whose work inspired me to create this package based on [laravel-model-nanoid](https://github.com/michaeldyrynda/laravel-model-nanoid) but uses NanoId instead of UUID.
+Huge thanks to Micheal Dyrynda, whose work inspired me to create this package based on [laravel-model-nanoid](https://github.com/michaeldyrynda/laravel-model-uuid) but uses NanoId instead of UUID.
 
 ## Why NanoID?
 
@@ -49,12 +49,12 @@ class Post extends Model
 }
 ```
 
-It is assumed that you already have a field named `nanoId` in your database, which is used to store the generated value. If you wish to use a custom column name, for example if you want your primary `id` column to be a `NanoID`, you can define a `nanoIdColumn` method in your model.
+It is assumed that you already have a field named `nanoId` in your database, which is used to store the generated value. If you wish to use a custom column name, for example if you want your primary `id` column to be a `NanoID`, you can define a static `nanoIdColumn` method in your model.
 
 ```php
 class Post extends Model
 {
-    public function nanoIdColumn(): string
+    public static function nanoIdColumn(): string
     {
         return 'id';
     }
@@ -124,7 +124,7 @@ When querying using the `whereNanoId()` scope, the default column - specified by
 ```php
 class Post extends Model
 {
-    public function nanoIdColumns(): array
+    public static function nanoIdColumns(): array
     {
         return ['nanoId', 'custom_column'];
     }
@@ -134,7 +134,7 @@ class Post extends Model
 The `nanoIdColumns` must return an array. You can customize the generated `NanoId` for each column by using an associative array where the key is the column name and the value is an array with an optional int `size` and string `alphabet` keys.
 
 ```php
-  public function nanoIdColumns(): array
+  public static function nanoIdColumns(): array
     {
         // Option 1: array of column names: this will use the default size and alphabets
         return ['nanoId', 'custom_column'];
