@@ -27,7 +27,7 @@ trait NanoIdAsPrimaryKey
      *
      * @var bool
      */
-    public $incrementing = false;
+    protected $incrementing = false;
 
      /**
      * The data type of the primary key ID.
