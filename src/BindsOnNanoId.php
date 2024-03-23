@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait BindsOnNanoId
 {
-    abstract public function nanoIdColumn(): string;
+    abstract public static function nanoIdColumn(): string;
 
     /**
      * Get the route key for the model.
@@ -24,12 +24,12 @@ trait BindsOnNanoId
      */
     public function getRouteKeyName(): string
     {
-        return $this->nanoIdColumn();
+        return self::nanoIdColumn();
     }
 
     /**
-     * Route bind desired nanoid field
-     * Default 'nanoid' column name has been set.
+     * Route bind desired nanoId field
+     * Default 'nanoId' column name has been set.
      *
      * @param  string  $value
      * @param  null|string  $field

@@ -25,7 +25,7 @@ class TestCase extends OrchestraTestCase
         $app['db']->connection()->getSchemaBuilder()->create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uuid')->nullable();
-            $table->uuid('custom_nanoid')->nullable();
+            $table->uuid('custom_nanoId')->nullable();
             $table->efficientUuid('efficient_uuid')->nullable();
             $table->string('title');
         });

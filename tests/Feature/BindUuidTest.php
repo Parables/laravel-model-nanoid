@@ -33,12 +33,12 @@ class BindUuidTest extends TestCase
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/' . $post->custom_nanoid)->assertNotFound();
-        $this->get(route('posts.show', $post->custom_nanoid))->assertNotFound();
+        $this->get('/posts/' . $post->custom_nanoId)->assertNotFound();
+        $this->get(route('posts.show', $post->custom_nanoId))->assertNotFound();
     }
 
     /** @test */
-    public function it_binds_to_custom_nanoid_field()
+    public function it_binds_to_custom_nanoId_field()
     {
         $post = factory(CustomNanoIdRouteBoundPost::class)->create();
 
@@ -46,12 +46,12 @@ class BindUuidTest extends TestCase
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/' . $post->custom_nanoid)->assertSuccessful();
+        $this->get('/posts/' . $post->custom_nanoId)->assertSuccessful();
         $this->get(route('posts.show', $post))->assertSuccessful();
     }
 
     /** @test */
-    public function it_fails_on_invalid_custom_nanoid_field_value()
+    public function it_fails_on_invalid_custom_nanoId_field_value()
     {
         $post = factory(CustomNanoIdRouteBoundPost::class)->create();
 
@@ -68,11 +68,11 @@ class BindUuidTest extends TestCase
     {
         $post = factory(MultipleNanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_nanoid}', function (MultipleNanoIdRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_nanoId}', function (MultipleNanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 
-        $this->get('/posts/' . $post->custom_nanoid)->assertSuccessful();
+        $this->get('/posts/' . $post->custom_nanoId)->assertSuccessful();
         $this->get(route('posts.show', $post))->assertSuccessful();
     }
 
@@ -81,7 +81,7 @@ class BindUuidTest extends TestCase
     {
         $post = factory(MultipleNanoIdRouteBoundPost::class)->create();
 
-        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_nanoid}', function (MultipleNanoIdRouteBoundPost $post) {
+        Route::middleware(SubstituteBindings::class)->get('/posts/{post:custom_nanoId}', function (MultipleNanoIdRouteBoundPost $post) {
             return $post;
         })->name('posts.show');
 

@@ -13,7 +13,7 @@ alt="Nano ID logo by Anton Lovchikov" width="180" height="94">
 
 A tiny, secure, URL-friendly, unique string ID generator for PHP.
 
-This package is PHP implementation of [ai's](https://github.com/ai) [nanoid](https://github.com/ai/nanoid).
+This package is PHP implementation of [ai's](https://github.com/ai) [nanoId](https://github.com/ai/nanoid).
 Read its documentation for more information.
 
 -   **Fast.** It is faster than NanoID.
@@ -21,7 +21,7 @@ Read its documentation for more information.
 -   **Compact.** It uses a larger alphabet than NanoID (`A-Za-z0-9_-`). So ID size was reduced from 36 to 21 symbols.
 -   **Customizable.** Size, alphabet and Random Bytes Generator may be overridden.
 
-> **Note**: this package explicitly does not disable auto-incrementing on your Eloquent models. In terms of database indexing, it is generally more efficient to use auto-incrementing integers for your internal querying. Indexing your `nanoid` column will make lookups against that column fast, without impacting queries between related models.
+> **Note**: this package explicitly does not disable auto-incrementing on your Eloquent models. In terms of database indexing, it is generally more efficient to use auto-incrementing integers for your internal querying. Indexing your `nanoId` column will make lookups against that column fast, without impacting queries between related models.
 
 ## Installation
 
@@ -49,7 +49,7 @@ class Post extends Model
 }
 ```
 
-It is assumed that you already have a field named `nanoid` in your database, which is used to store the generated value. If you wish to use a custom column name, for example if you want your primary `id` column to be a `NanoID`, you can define a `nanoIdColumn` method in your model.
+It is assumed that you already have a field named `nanoId` in your database, which is used to store the generated value. If you wish to use a custom column name, for example if you want your primary `id` column to be a `NanoID`, you can define a `nanoIdColumn` method in your model.
 
 ```php
 class Post extends Model
@@ -91,14 +91,14 @@ And update your migrations
 This trait also provides a query scope which will allow you to easily find your records based on their NanoID, and respects any custom field name you choose.
 
 ```php
-// Find a specific post with the default (nanoid) column name
-$post = Post::whereNanoId($nanoid)->first();
+// Find a specific post with the default (nanoId) column name
+$post = Post::whereNanoId($nanoId)->first();
 
-// Find multiple posts with the default (nanoid) column name
+// Find multiple posts with the default (nanoId) column name
 $post = Post::whereNanoId([$first, $second])->get();
 
 // Find a specific post with a custom column name
-$post = Post::whereNanoId($nanoid, 'custom_column')->first();
+$post = Post::whereNanoId($nanoId, 'custom_column')->first();
 
 // Find multiple posts with a custom column name
 $post = Post::whereNanoId([$first, $second], 'custom_column')->get();
@@ -106,18 +106,18 @@ $post = Post::whereNanoId([$first, $second], 'custom_column')->get();
 
 ## Route model binding
 
-Should you wish to leverage implicit route model binding on your `nanoid` field, you may use the `BindsOnNanoId` trait, which will use the value returned by `nanoIdColumn()`. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
+Should you wish to leverage implicit route model binding on your `nanoId` field, you may use the `BindsOnNanoId` trait, which will use the value returned by `nanoIdColumn()`. Should you require additional control over the binding, you may override the `getRouteKeyName` method directly.
 
 ```php
 public function getRouteKeyName(): string
 {
-    return 'nanoid';
+    return 'nanoId';
 }
 ```
 
 You can generate multiple NanoID columns for a model by returning an array of column names in the `nanoIdColumns()` method.
 
-If you use the `nanoIdColumns()` method, then **first** element in the array must be the value returned by the `nanoIdColumn()` method which by default is `nanoid`. If you overwrite the `nanoIdColumn()` method, put its return value as the **first** element in the `nanoIdColumns()` return array.
+If you use the `nanoIdColumns()` method, then **first** element in the array must be the value returned by the `nanoIdColumn()` method which by default is `nanoId`. If you overwrite the `nanoIdColumn()` method, put its return value as the **first** element in the `nanoIdColumns()` return array.
 
 When querying using the `whereNanoId()` scope, the default column - specified by `nanoIdColumn()` will be used.
 
@@ -126,7 +126,7 @@ class Post extends Model
 {
     public function nanoIdColumns(): array
     {
-        return ['nanoid', 'custom_column'];
+        return ['nanoId', 'custom_column'];
     }
 }
 ```
@@ -137,19 +137,19 @@ The `nanoIdColumns` must return an array. You can customize the generated `NanoI
   public function nanoIdColumns(): array
     {
         // Option 1: array of column names: this will use the default size and alphabets
-        return ['nanoid', 'custom_column'];
+        return ['nanoId', 'custom_column'];
 
         // Option 2: an array where each element is an array with a required 'key' property.
         // no id will be generated if key is null. 'size' and 'alphabet' properties are optional
         return [
-            ['key'=>'nanoid'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
+            ['key'=>'nanoId'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
             ['key'=>'column_one', 'size' => 6, 'alphabets'=> NanoId::ALPHABET_NUMBERS],
             ['key'=>'column_two', 'size' => 10, 'alphabets'=> NanoId::ALPHABET_UUID],
         ];
 
           // Option 3: an array with a string key and an array value with an optional 'size' and 'alphabet' property. If a 'key' is passed in the value, it overwrites the original array 'key'.
         return [
-            ['key'=>'nanoid'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
+            ['key'=>'nanoId'], // use the NanoId::SIZE_DEFAULT = 21; and NanoId::ALPHABET_DEFAULT
             'column_one' => ['size' => 6, 'alphabets'=> NanoId::ALPHABET_NUMBERS],
             // will use 'another_column' as the column name instead of 'column_two'
             'column_two' => ['key'=>'another_column', 'size' => 10, 'alphabets'=> NanoId::ALPHABET_UUID],

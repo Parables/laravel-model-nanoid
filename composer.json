@@ -6,7 +6,7 @@
         "eloquent",
         "laravel",
         "model",
-        "nanoid"
+        "nanoId"
     ],
     "authors": [
         {

@@ -10,14 +10,14 @@ use Illuminate\Database\Eloquent\Builder;
  * NanoID generation trait.
  *
  * Include this trait in any Eloquent model where you wish to automatically set
- * a NanoID field. When saving, if the `nanoid` field has not been set, generate a
+ * a NanoID field. When saving, if the `nanoId` field has not been set, generate a
  * new NanoID value, which will be set on the model and saved by Eloquent.
  *
  * @author    Parables Boltnoel <parables@github.com>
  * @copyright 2017 Parables Boltnoel
  * @license   MIT <https://github.com/parables>
  *
- * @method static \Illuminate\Database\Eloquent\Builder  whereNanoID(string $nanoid)
+ * @method static \Illuminate\Database\Eloquent\Builder  whereNanoID(string $nanoId)
  */
 trait GeneratesNanoId
 {
@@ -26,9 +26,9 @@ trait GeneratesNanoId
      *
      * @return string
      */
-    public function nanoIdColumn(): string
+    public static function nanoIdColumn(): string
     {
-        return 'nanoid';
+        return 'nanoId';
     }
 
     /**
@@ -36,30 +36,30 @@ trait GeneratesNanoId
      *
      * @return array
      */
-    public function nanoIdColumns(): array
+    public static function nanoIdColumns(): array
     {
-        return [$this->nanoIdColumn()];
+        return [self::nanoIdColumn()];
     }
 
     /**
      * Scope queries to find by NanoID.
      *
      * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param  string|array                          $nanoid
+     * @param  string|array                          $nanoId
      * @param  string                                $nanoIdColumn
      *
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereNanoId($query, $nanoid, $nanoIdColumn = null): Builder
+    public function scopeWhereNanoId($query, $nanoId, $nanoIdColumn = null): Builder
     {
         $nanoIdColumn = !is_null($nanoIdColumn) &&
-            in_array($nanoIdColumn, $this->nanoIdColumns())
+            in_array($nanoIdColumn, self::nanoIdColumns())
             ? $nanoIdColumn
-            : $this->nanoIdColumns()[0];
+            : self::nanoIdColumns()[0];
 
         return $query->whereIn(
             $this->qualifyColumn($nanoIdColumn),
-            Arr::wrap($nanoid)
+            Arr::wrap($nanoId)
         );
     }
 
@@ -67,7 +67,7 @@ trait GeneratesNanoId
     {
         static::creating(
             function ($model) {
-                foreach (self::transformNanoIdColumns($model->nanoIdColumns()) as $column) {
+                foreach (self::transformNanoIdColumns($model::nanoIdColumns()) as $column) {
                     $columnName = $column['key'];
                     if (!isset($model->attributes[$columnName])) {
                         $model->{$columnName} = NanoId::nanoId(size: $column['size'], alphabet: $column['alphabets']);

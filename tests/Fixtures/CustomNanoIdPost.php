@@ -4,8 +4,8 @@ namespace Tests\Fixtures;
 
 class CustomNanoIdPost extends Model
 {
-    public function nanoIdColumn(): string
+    public static function nanoIdColumn(): string
     {
-        return 'custom_nanoid';
+        return 'custom_nanoId';
     }
 }
