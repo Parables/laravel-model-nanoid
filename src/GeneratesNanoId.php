@@ -57,8 +57,13 @@ trait GeneratesNanoId
             ? $nanoIdColumn
             : self::nanoIdColumns()[0];
 
+        $nanoIdColumnKey = is_array($nanoIdColumn) ?
+        (
+            array_key_exists('key', $nanoIdColumn) ? $nanoIdColumn['key'] : $nanoIdColumn[0]
+        ) : $nanoIdColumn;
+
         return $query->whereIn(
-            $this->qualifyColumn($nanoIdColumn),
+            $this->qualifyColumn($nanoIdColumnKey),
             Arr::wrap($nanoId)
         );
     }
