@@ -52,10 +52,8 @@ trait GeneratesNanoId
      */
     public function scopeWhereNanoId($query, $nanoId, $nanoIdColumn = null): Builder
     {
-        $nanoIdColumn = !is_null($nanoIdColumn) &&
-            in_array($nanoIdColumn, self::nanoIdColumns())
-            ? $nanoIdColumn
-            : self::nanoIdColumns()[0];
+        $config = self::transformNanoIdColumns(self::nanoIdColumns());
+        $nanoIdColumn ??= $config[0]['key'];
 
         return $query->whereIn(
             $this->qualifyColumn($nanoIdColumn),
