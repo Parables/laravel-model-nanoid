@@ -4,7 +4,7 @@ namespace Tests\Fixtures;
 
 class MultipleNanoIdPost extends Model
 {
-    public function nanoIdColumns(): array
+    public static function nanoIdColumns(): array
     {
         return ['nanoId', 'custom_nanoId'];
     }

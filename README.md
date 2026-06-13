@@ -1,8 +1,8 @@
-# Laravel Model UUIDs
+# Laravel Model NanoIds
 
 ## Introduction
 
-Huge thanks to Micheal Dyrynda, whose work inspired me to create this package based on [laravel-model-nanoid](https://github.com/michaeldyrynda/laravel-model-uuid) but uses NanoId instead of UUID.
+Huge thanks to Micheal Dyrynda, whose work inspired me to create this package based on [laravel-model-uuid](https://github.com/michaeldyrynda/laravel-model-uuid) but uses NanoId instead of UUID.
 
 ## Why NanoID?
 
@@ -30,6 +30,8 @@ This package is installed via [Composer](https://getcomposer.org/). To install, 
 ```bash
 composer require parables/laravel-model-nanoid
 ```
+
+This package supports Laravel 10, 11, 12, and 13 on PHP 8.3 or newer.
 
 ## Code Samples
 
@@ -63,7 +65,7 @@ class Post extends Model
 
 ## Use NanoId as primary key
 
-If you choose to use a NanoID as your primary model key (`id`), then use `GeneratesNanoIdAsPrimaryKey` trait on your model.
+If you choose to use a NanoID as your primary model key (`id`), then use the `NanoIdAsPrimaryKey` trait on your model.
 
 ```php
 <?php
