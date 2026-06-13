@@ -24,7 +24,7 @@ trait BindsOnNanoId
      */
     public function getRouteKeyName(): string
     {
-        return self::nanoIdColumn();
+        return static::nanoIdColumn();
     }
 
     /**
@@ -37,6 +37,6 @@ trait BindsOnNanoId
      */
     public function resolveRouteBinding($value, $field = null): Model
     {
-        return self::whereNanoId($value, $field)->firstOrFail();
+        return static::whereNanoId($value, $field)->firstOrFail();
     }
 }

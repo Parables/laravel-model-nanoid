@@ -2,9 +2,9 @@
 
 namespace Parables\NanoId;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Snortlin\NanoId\NanoId;
-use Illuminate\Database\Eloquent\Builder;
 
 /**
  * NanoID generation trait.
@@ -38,7 +38,7 @@ trait GeneratesNanoId
      */
     public static function nanoIdColumns(): array
     {
-        return [self::nanoIdColumn()];
+        return [static::nanoIdColumn()];
     }
 
     /**
@@ -52,7 +52,7 @@ trait GeneratesNanoId
      */
     public function scopeWhereNanoId($query, $nanoId, $nanoIdColumn = null): Builder
     {
-        $config = self::transformNanoIdColumns(self::nanoIdColumns());
+        $config = static::transformNanoIdColumns(static::nanoIdColumns());
         $nanoIdColumn ??= $config[0]['key'];
 
         return $query->whereIn(
@@ -65,7 +65,7 @@ trait GeneratesNanoId
     {
         static::creating(
             function ($model) {
-                foreach (self::transformNanoIdColumns($model::nanoIdColumns()) as $column) {
+                foreach (static::transformNanoIdColumns($model::nanoIdColumns()) as $column) {
                     $columnName = $column['key'];
                     if (!isset($model->attributes[$columnName])) {
                         $model->{$columnName} = NanoId::nanoId(size: $column['size'], alphabet: $column['alphabets']);
@@ -78,7 +78,7 @@ trait GeneratesNanoId
     private static function transformNanoIdColumns(array $arr)
     {
         $mappedColumns = array_map(
-            [self::class, 'transformNanoIdColumnsCallback'],
+            [static::class, 'transformNanoIdColumnsCallback'],
             array_keys($arr),
             array_values($arr)
         );
@@ -87,15 +87,15 @@ trait GeneratesNanoId
 
     private static function transformNanoIdColumnsCallback($key, $value)
     {
-        return self::getColumnFromNumericKey(key: $key, value: $value);
+        return static::getColumnFromNumericKey(key: $key, value: $value);
     }
 
 
     private static function getColumnFromNumericKey($key, $value)
     {
         return is_numeric($key)
-            ? self::getColumnFromStringValue(value: $value)
-            : self::getColumnFromStringKey(key: $key, value: $value);
+            ? static::getColumnFromStringValue(value: $value)
+            : static::getColumnFromStringKey(key: $key, value: $value);
     }
 
     private static function getColumnFromStringValue($value)
@@ -105,7 +105,7 @@ trait GeneratesNanoId
                 'key' => $value,
                 'size' => NanoId::SIZE_DEFAULT,
                 'alphabets' => NanoId::ALPHABET_DEFAULT
-            ] : self::getColumnFromArrayValue(value: $value);
+            ] : static::getColumnFromArrayValue(value: $value);
     }
 
     private static function getColumnFromArrayValue($value)
@@ -113,8 +113,8 @@ trait GeneratesNanoId
         return (is_array($value) && array_key_exists('key', $value)) ?
             [
                 'key' => $value['key'],
-                'size' =>  self::getSizeFromArrayValueOrDefaultSize(value: $value),
-                'alphabets' => self::getAlphabetsFromArrayValueOrDefaultAlphabets(value: $value)
+                'size' => static::getSizeFromArrayValueOrDefaultSize(value: $value),
+                'alphabets' => static::getAlphabetsFromArrayValueOrDefaultAlphabets(value: $value)
             ] : null;
     }
 
@@ -122,9 +122,9 @@ trait GeneratesNanoId
     {
         return is_string($key) ?
             [
-                'key' => self::getKeyFromArrayValueOrDefaultKey(key: $key, value: $value),
-                'size' => self::getSizeFromArrayValueOrDefaultSize(value: $value),
-                'alphabets' => self::getAlphabetsFromArrayValueOrDefaultAlphabets(value: $value)
+                'key' => static::getKeyFromArrayValueOrDefaultKey(key: $key, value: $value),
+                'size' => static::getSizeFromArrayValueOrDefaultSize(value: $value),
+                'alphabets' => static::getAlphabetsFromArrayValueOrDefaultAlphabets(value: $value)
             ] : null;
     }
 

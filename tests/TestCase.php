@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Dyrynda\Database\LaravelEfficientUuidServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
@@ -13,8 +12,6 @@ class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        $this->withFactories(realpath(__DIR__ . '/database/factories'));
-
         $this->setupDatabase($this->app);
     }
 
@@ -24,16 +21,15 @@ class TestCase extends OrchestraTestCase
 
         $app['db']->connection()->getSchemaBuilder()->create('posts', function (Blueprint $table) {
             $table->increments('id');
-            $table->uuid('uuid')->nullable();
-            $table->uuid('custom_nanoId')->nullable();
-            $table->efficientUuid('efficient_uuid')->nullable();
+            $table->string('nanoId')->nullable();
+            $table->string('custom_nanoId')->nullable();
             $table->string('title');
         });
 
         $app['db']->connection()->getSchemaBuilder()->create('comments', function (Blueprint $table) {
             $table->increments('id');
             $table->foreignId('post_id');
-            $table->uuid('uuid')->nullable();
+            $table->string('nanoId')->nullable();
             $table->text('body');
         });
     }
